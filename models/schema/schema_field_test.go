@@ -517,6 +517,11 @@ func TestSchemaFieldInitOptions(t *testing.T) {
 			`{"system":false,"id":"","name":"","type":"editor","required":false,"presentable":false,"unique":false,"options":{"convertUrls":false}}`,
 		},
 		{
+			schema.SchemaField{Type: schema.FieldTypeVector},
+			false,
+			`{"system":false,"id":"","name":"","type":"vector","required":false,"presentable":false,"unique":false,"options":{"convertUrls":false}}`,
+		},
+		{
 			schema.SchemaField{Type: schema.FieldTypeDate},
 			false,
 			`{"system":false,"id":"","name":"","type":"date","required":false,"presentable":false,"unique":false,"options":{"min":"","max":""}}`,

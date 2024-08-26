@@ -64,6 +64,11 @@
             value: "json",
             icon: CommonHelper.getFieldTypeIcon("json"),
         },
+        {
+            label: "Vector",
+            value: "vector",
+            icon: CommonHelper.getFieldTypeIcon("vector"),
+        },
     ];
 
     function select(fieldType) {

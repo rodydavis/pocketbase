@@ -91,6 +91,7 @@ const (
 	FieldTypeEmail    string = "email"
 	FieldTypeUrl      string = "url"
 	FieldTypeEditor   string = "editor"
+	FieldTypeVector   string = "vector"
 	FieldTypeDate     string = "date"
 	FieldTypeSelect   string = "select"
 	FieldTypeJson     string = "json"
@@ -115,6 +116,7 @@ func FieldTypes() []string {
 		FieldTypeJson,
 		FieldTypeFile,
 		FieldTypeRelation,
+		FieldTypeVector,
 	}
 }
 
@@ -124,6 +126,7 @@ func ArraybleFieldTypes() []string {
 		FieldTypeSelect,
 		FieldTypeFile,
 		FieldTypeRelation,
+		FieldTypeVector,
 	}
 }
 
@@ -155,6 +158,8 @@ func (f *SchemaField) ColDefinition() string {
 		return "BOOLEAN DEFAULT FALSE NOT NULL"
 	case FieldTypeJson:
 		return "JSON DEFAULT NULL"
+	case FieldTypeVector:
+		return "BLOB DEFAULT '[]'"
 	default:
 		if opt, ok := f.Options.(MultiValuer); ok && opt.IsMultiple() {
 			return "JSON DEFAULT '[]' NOT NULL"

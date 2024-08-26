@@ -80,6 +80,8 @@ export default class CommonHelper {
                 return "";
             case "number":
                 return 0;
+            case "vector":
+                return [];
             case "boolean":
                 return false;
             case "object":
@@ -1077,6 +1079,8 @@ export default class CommonHelper {
                 val = 123;
             } else if (field.type === "date") {
                 val = "2022-01-01 10:00:00.123Z";
+            } else if (field.type === "vector") {
+                val = [1.0, 2.0, 3.0];
             } else if (field.type === "bool") {
                 val = true;
             } else if (field.type === "email") {
@@ -1128,6 +1132,8 @@ export default class CommonHelper {
                 val = 123;
             } else if (field.type === "date") {
                 val = "2022-01-01 10:00:00.123Z";
+            } else if (field.type === "vector") {
+                val = [1.0, 2.0, 3.0];
             } else if (field.type === "bool") {
                 val = true;
             } else if (field.type === "email") {
@@ -1209,6 +1215,8 @@ export default class CommonHelper {
                 return "ri-mind-map";
             case "user":
                 return "ri-user-line";
+            case "vector":
+                return "ri-braces-line";
             default:
                 return "ri-star-s-line";
         }
@@ -1226,6 +1234,8 @@ export default class CommonHelper {
                 return 'Boolean';
             case 'number':
                 return 'Number';
+            case 'vector':
+                return 'Array<number>';
             case 'file':
                 return 'File';
             case 'select':
@@ -1258,8 +1268,12 @@ export default class CommonHelper {
             return 'null, "", [], {}';
         }
 
+        if (field?.type === "vector") {
+            return 'null, "", []';
+        }
+
         // arrayable fields
-        if (["select", "relation", "file"].includes(field?.type) && field?.options?.maxSelect != 1) {
+        if (["select", "relation", "file", "vector"].includes(field?.type) && field?.options?.maxSelect != 1) {
             return "[]";
         }
 
