@@ -4,26 +4,30 @@ package core
 
 import (
 	"database/sql"
+	"fmt"
+	"os"
+	"strings"
 
 	"github.com/mattn/go-sqlite3"
 	"github.com/pocketbase/dbx"
 )
 
-var DBExtensions = []string{}
-
-var DBConnectHooks = [](func(conn *sqlite3.SQLiteConn) error){}
-
-var DBPragma = `
-PRAGMA busy_timeout       = 10000;
-PRAGMA journal_mode       = WAL;
-PRAGMA journal_size_limit = 200000000;
-PRAGMA synchronous        = NORMAL;
-PRAGMA foreign_keys       = ON;
-PRAGMA temp_store         = MEMORY;
-PRAGMA cache_size         = -16000;
-`
-
 func init() {
+	extensionsStr := os.Getenv("PB_DB_EXTENSIONS")
+	extensions := strings.Split(extensionsStr, ",")
+
+	pragma := os.Getenv("PB_DB_PRAGMA")
+	if pragma == "" {
+		pragma = `
+		PRAGMA busy_timeout       = 10000;
+		PRAGMA journal_mode       = WAL;
+		PRAGMA journal_size_limit = 200000000;
+		PRAGMA synchronous        = NORMAL;
+		PRAGMA foreign_keys       = ON;
+		PRAGMA temp_store         = MEMORY;
+		PRAGMA cache_size         = -16000;
+		`
+	}
 	// Registers the sqlite3 driver with a ConnectHook so that we can
 	// initialize the default PRAGMAs.
 	//
@@ -33,15 +37,12 @@ func init() {
 	// Note 2: the busy_timeout pragma must be first because
 	// the connection needs to be set to block on busy before WAL mode
 	// is set in case it hasn't been already set by another connection.
+	print(fmt.Sprint(extensions))
 	sql.Register("pb_sqlite3",
 		&sqlite3.SQLiteDriver{
-			Extensions: DBExtensions,
+			Extensions: extensions,
 			ConnectHook: func(conn *sqlite3.SQLiteConn) error {
-				_, err := conn.Exec(DBPragma, nil)
-				for i := 0; i < len(DBConnectHooks); i++ {
-					hook := DBConnectHooks[i]
-					hook(conn)
-				}
+				_, err := conn.Exec(pragma, nil)
 				return err
 			},
 		},
